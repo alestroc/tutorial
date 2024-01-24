@@ -4,6 +4,9 @@ import { ref, onMounted, computed, watch } from 'vue'
 const todos = ref([])
 const name = ref('')
 
+
+
+
 const input_content = ref('')
 const input_category = ref(null)
 
@@ -45,47 +48,54 @@ onMounted(() => {
 </script>
 
 <template>
-  <main class="app">
+  <v-layout class="rounded rounded-md">
+  <v-main class="app">
+    <v-app-bar title="Application bar">
+    </v-app-bar>
     <section class="greeting">
       <h2 class="title">
-        Heyla come va, <input type="text" placeholder="Name here" v-model="name"  />?
+        Data e ora attuale <input type="text" placeholder="Name here" v-model="name"  />?
       </h2>
     </section>
 
+
+
+
     <section class="create-todo">
+
       <h3>CREATE A TODO</h3>
 
-      <FORM @submit.prevent="addTodo">
+      <form @submit.prevent="addTodo">
 
-        <h4>what's on your todo list</h4>
-
-        <input type="text" placeholder="e.g. make a video" v-model="input_content" />
+        <h4>what's on your todo list?</h4>
+        <v-text-field label="e.g. make a video" v-on:submit.prevent  v-model="input_content" ></v-text-field>
+        
 
         <h4>Pick a category</h4>
 
-        <div class="option">
-          <label>
-            <input type="radio" name="category" value="business" v-model="input_category">
-            <span class="bubble business"></span>
-            <div>Business</div>
-          </label>
-          <label>
-            <input type="radio" name="category" value="personal" v-model="input_category">
-            <span class="bubble personal"></span>
-            <div>Personal</div>
-          </label>
 
+        <div class="option">
+
+          <v-radio-group v-model="input_category" inline="">
+            <v-radio label="Business"  value="business"></v-radio>
+            <v-radio label="Personal"  value="personal"></v-radio>
+            <v-radio label="Hobby" value="hobby"></v-radio>
+          </v-radio-group>
         </div>
 
-        <input type="submit" value="Add todo">
-      </FORM>
+         <input class="categoria" type="submit" value="Add todo">
+         
+      
+      </form>
     </section>
     <section>
+    <br>
+
       <h3> TODO LIST</h3>
       <div class="list">
 
         
-        <div v-for="todo in todos_asc" :key="todo.id" :class="`todo-item ${todo.done && 'done'}`">
+        <div v-for="todo in todos_asc" :key="todo.class" :class="`todo-item ${todo.done && 'done'}`"> 
 
           <label>
             <input type="checkbox" v-model="todo.done" />
@@ -96,7 +106,7 @@ onMounted(() => {
           </div>
 
           <div class="actions">
-            <button class="delete" @click="removeTodo(todo)">Delete</button>
+            <v-btn prepend-icon="$vuetify" class="delete" @click="removeTodo(todo)"> Delete </v-btn>
           </div>
 
         </div>
@@ -104,5 +114,6 @@ onMounted(() => {
 
       </div>
     </section>
-  </main>
+  </v-main>
+</v-layout>
 </template>
