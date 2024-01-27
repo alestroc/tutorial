@@ -11,10 +11,12 @@ const input_content = ref('')
 const input_category = ref(null)
 
 // eslint-disable-next-line vue/no-side-effects-in-computed-properties
-const todos_asc = computed(() => todos.value.sort((a, b) => {
-  return b.createdAt - a.createdAt
+  const todos_asc = computed(() => todos.value.sort((a, b) => {   
+    return b.createdAt - a.createdAt
+  }))
 
-}))
+
+
 
 const addTodo = () => {
   if (input_content.value.trim() === '' || input_category.value === null) {
@@ -29,10 +31,11 @@ const addTodo = () => {
   })
   input_content.value = ''
   input_category.value = null
-}
+};
 
-const removeTodo = todo=> {
-  todos.value= todos.value.filter(t=> t!== todo)
+
+const removeTodo = todo => {
+  todos.value = todos.value.filter(t => t !== todo)
 }
 watch(todos, newVal => {
   localStorage.setItem('todos', JSON.stringify(newVal))
@@ -45,75 +48,94 @@ onMounted(() => {
   name.value = localStorage.getItem('name') || ''
   todos.value = JSON.parse(localStorage.getItem('todos')) || []
 })
+
+
 </script>
 
+<script>
+export default {
+  methods: {
+  formatDate(dateString) {
+    const date = new Date(dateString);
+    const day = date.getUTCDate().toString().padStart(2, '0');
+    const month = (date.getUTCMonth() + 1).toString().padStart(2, '0'); // Months are 0-based
+    const year = date.getUTCFullYear();
+    return `${day}/${month}/${year}`;
+  }
+}
+
+
+}
+</script>
+
+
+
+
 <template>
-  <v-layout class="rounded rounded-md">
-  <v-main class="app">
-    <v-app-bar title="Application bar">
-    </v-app-bar>
-    <section class="greeting">
-      <h2 class="title">
-        Data e ora attuale <input type="text" placeholder="Name here" v-model="name"  />?
-      </h2>
-    </section>
-
-
-
-
-    <section class="create-todo">
-
-      <h3>CREATE A TODO</h3>
-
-      <form @submit.prevent="addTodo">
-
-        <h4>what's on your todo list?</h4>
-        <v-text-field label="e.g. make a video" v-on:submit.prevent  v-model="input_content" ></v-text-field>
-        
-
-        <h4>Pick a category</h4>
-
-
-        <div class="option">
-
-          <v-radio-group v-model="input_category" inline="">
-            <v-radio label="Business"  value="business"></v-radio>
-            <v-radio label="Personal"  value="personal"></v-radio>
-            <v-radio label="Hobby" value="hobby"></v-radio>
-          </v-radio-group>
-        </div>
-
-         <input class="categoria" type="submit" value="Add todo">
-         
+  <v-app>
+    <v-layout class="rounded rounded-md">
       
-      </form>
-    </section>
-    <section>
-    <br>
+      <v-main class="app">
 
-      <h3> TODO LIST</h3>
-      <div class="list">
-
-        
-        <div v-for="todo in todos_asc" :key="todo.class" :class="`todo-item ${todo.done && 'done'}`"> 
-
-          <label>
-            <input type="checkbox" v-model="todo.done" />
-            <span :class="`bubble ${todo.category}`"></span>
-          </label>
-          <div class="todo-content">
-            <input type="text" v-model="todo.content">
-          </div>
-
-          <div class="actions">
-            <v-btn prepend-icon="$vuetify" class="delete" @click="removeTodo(todo)"> Delete </v-btn>
-          </div>
-
+        <div>
+          <p>Data e ora attuali: {{ currentDateTime }}</p>
+          <!-- Resto del tuo template -->
         </div>
 
 
-      </div>
-    </section>
-  </v-main>
-</v-layout>
+
+
+        <section class="create-todo">
+
+          <h3>CREATE A TODO</h3>
+
+          <form @submit.prevent="addTodo">
+
+            <h4>what's on your todo list?</h4>
+            <v-textarea rows="2" row-height="10" class="todo-input"  v-on:submit.prevent v-model="input_content"></v-textarea>
+
+
+            <h4>Pick a category</h4>
+
+
+            <div class="option">
+
+              <v-radio-group v-model="input_category" inline="">
+                <v-radio class="business-radio" label="Business" value="business"></v-radio>
+                <v-radio class="personal-radio" label="Personal" value="personal"></v-radio>
+                <v-radio class="hobby-radio" label="Hobby" value="hobby"></v-radio>
+              </v-radio-group>
+            </div>
+
+            <input class="categoria" type="submit" value="Add todo">
+
+
+          </form>
+        </section>
+        <section>
+          <br>
+
+          <h3> TODO LIST</h3>
+          
+
+          <div v-for="todo in todos_asc" :key="todo.id" :class="`todo-item ${todo.done && 'done'} && ${todo.category}`">
+            {{ todo.category }}
+            <label>
+              <input type="checkbox" v-model="todo.done" />
+              <span :class="`bubble ${todo.category}`"></span>
+            </label>
+
+
+            <v-textarea rows="1" row-height="10" class="todo-item-text" v-model="todo.content"></v-textarea>
+            <span class="date">{{ formatDate(todo.createdAt) }}</span>
+
+            <v-btn prepend-icon="$vuetify" class="delete" @click="removeTodo(todo)"> Delete </v-btn>
+
+          </div>
+
+        </section>
+      </v-main>
+    </v-layout>
+  </v-app>
 </template>
+
