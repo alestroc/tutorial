@@ -62,7 +62,12 @@ export default {
     const year = date.getUTCFullYear();
     return `${day}/${month}/${year}`;
   }
-}
+},
+data() {
+  return {
+    picked:''
+  }
+},
 
 
 }
@@ -81,7 +86,13 @@ export default {
           <p>Data e ora attuali: {{ currentDateTime }}</p>
           <!-- Resto del tuo template -->
         </div>
-
+         <input type="radio" id="one" value="One" v-model="picked">
+          <label for="one">One</label>
+          <br>
+          <input type="radio" id="two" value="Two" v-model="picked">
+          <label for="two">Two</label>
+          <br>
+          <span>Picked: {{ picked }}</span>
 
 
 
@@ -105,9 +116,11 @@ export default {
                 <v-radio class="personal-radio" label="Personal" value="personal"></v-radio>
                 <v-radio class="hobby-radio" label="Hobby" value="hobby"></v-radio>
               </v-radio-group>
+              <input class="categoria" type="submit" value="Add todo">
+
             </div>
 
-            <input class="categoria" type="submit" value="Add todo">
+            
 
 
           </form>
@@ -119,7 +132,10 @@ export default {
           
 
           <div v-for="todo in todos_asc" :key="todo.id" :class="`todo-item ${todo.done && 'done'} && ${todo.category}`">
+            <div class="todo-item-category"> 
             {{ todo.category }}
+            </div>
+
             <label>
               <input type="checkbox" v-model="todo.done" />
               <span :class="`bubble ${todo.category}`"></span>
